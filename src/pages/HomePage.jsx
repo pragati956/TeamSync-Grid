@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Power, LayoutGrid, Users, Shield, Link, Rocket } from 'lucide-react';
 
 /**
  * The initial landing page content.
  */
 export const HomePageContent = ({ setView, logout, isAuthenticated }) => {
+
+  // Prevent login if already authenticated
+  const handleLoginClick = useCallback(() => {
+    if (isAuthenticated) {
+      alert("You are already logged in!");
+      return;
+    }
+    setView("auth");
+  }, [isAuthenticated, setView]);
+
   const features = [
     {
       icon: LayoutGrid,
@@ -40,6 +50,8 @@ export const HomePageContent = ({ setView, logout, isAuthenticated }) => {
           </div>
 
           <div className="flex items-center space-x-4">
+
+            {/* Go to Grid Button */}
             {isAuthenticated && (
               <button
                 onClick={() => setView('grid_setup')}
@@ -49,9 +61,14 @@ export const HomePageContent = ({ setView, logout, isAuthenticated }) => {
               </button>
             )}
 
+            {/* Sign In / Logout Button */}
             <button
-              onClick={isAuthenticated ? logout : () => setView('auth')}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition duration-300 text-sm"
+              onClick={isAuthenticated ? logout : handleLoginClick}
+              className={`px-4 py-2 rounded-lg font-semibold text-sm transition duration-300
+                ${isAuthenticated
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+                }`}
             >
               {isAuthenticated ? 'Log Out' : 'Ranger Sign In'}
             </button>
@@ -72,11 +89,19 @@ export const HomePageContent = ({ setView, logout, isAuthenticated }) => {
             TeamSync Grid is the ultimate Kanban solution for Power Rangers. Empower your team to track monster threats, Zord repairs, and Command Center logistics.
           </p>
 
+          {/* START MISSION Button */}
           <button
-            onClick={() => setView('auth')}
-            className="px-10 py-4 bg-yellow-500 text-gray-900 font-extrabold text-xl rounded-xl shadow-[0_5px_20px_rgba(255,255,0,0.5)] hover:bg-yellow-400 transition duration-300 transform hover:scale-[1.05] flex items-center justify-center mx-auto"
+            onClick={handleLoginClick}
+            disabled={isAuthenticated}
+            className={`px-10 py-4 font-extrabold text-xl rounded-xl
+              flex items-center justify-center mx-auto transition duration-300 transform
+              ${isAuthenticated
+                ? "bg-gray-600 cursor-not-allowed text-gray-300"
+                : "bg-yellow-500 text-gray-900 hover:bg-yellow-400 hover:scale-[1.05] shadow-[0_5px_20px_rgba(255,255,0,0.5)]"
+              }`}
           >
-            <Rocket className="w-6 h-6 mr-3" /> START YOUR MISSION
+            <Rocket className="w-6 h-6 mr-3" />
+            START YOUR MISSION
           </button>
 
         </div>
